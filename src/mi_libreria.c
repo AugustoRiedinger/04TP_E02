@@ -564,12 +564,11 @@ void INIT_TIM1(GPIO_TypeDef* Port, uint16_t Pin)
 {
 	  GPIO_InitTypeDef GPIO_InitStructure;
 
-
-	  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM1, ENABLE);
+	  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 	  //Habilitacion de la senal de reloj para el periferico:
 	  uint32_t Clock;
 	  Clock = FIND_CLOCK(Port);
-	  RCC_AHB1PeriphClockCmd(Clock, ENABLE);
+	  RCC_AHB2PeriphClockCmd(Clock, ENABLE);
 
 	  /* GPIOC Configuration: TIM4 CH1 (PD12),CH2 (PD13),CH3 (PD14)CH4 (PD15) */
 	  GPIO_InitStructure.GPIO_Pin = Pin;
