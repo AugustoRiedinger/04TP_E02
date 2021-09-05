@@ -568,7 +568,7 @@ void INIT_TIM1(GPIO_TypeDef* Port, uint16_t Pin)
 	  //Habilitacion de la senal de reloj para el periferico:
 	  uint32_t Clock;
 	  Clock = FIND_CLOCK(Port);
-	  RCC_AHB2PeriphClockCmd(Clock, ENABLE);
+	  RCC_AHB1PeriphClockCmd(Clock, ENABLE);
 
 	  /* GPIOC Configuration: TIM4 CH1 (PD12),CH2 (PD13),CH3 (PD14)CH4 (PD15) */
 	  GPIO_InitStructure.GPIO_Pin = Pin;
@@ -584,6 +584,7 @@ void INIT_TIM1(GPIO_TypeDef* Port, uint16_t Pin)
 
 	  /* Connect TIM4 pins to AF2 */
 	  GPIO_PinAFConfig(Port, PinSource, GPIO_AF_TIM1);
+	  TIM_CtrlPWMOutputs(TIM1, ENABLE);
 }
 
 
@@ -608,7 +609,6 @@ void SET_TIM1(uint16_t Pin, uint32_t TimeBase, uint32_t Freq, uint32_t DutyCycle
 
 	//Actualización de los valores del TIM4:
 	SystemCoreClockUpdate();
-	TIM_CtrlPWMOutputs(TIM1, DISABLE);
 	TIM_ARRPreloadConfig(TIM1, DISABLE);
 	TIM_Cmd(TIM1, DISABLE);
 
@@ -625,10 +625,6 @@ void SET_TIM1(uint16_t Pin, uint32_t TimeBase, uint32_t Freq, uint32_t DutyCycle
 
 	TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
 
-	/* PWM1 Mode configuration: Channel1*/
-	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-
 	//Configuración del Duty Cycle para cada pin:
 	DT_Value = DutyCycle * (TIM_Period + 1) / 100;
 
@@ -642,7 +638,7 @@ void SET_TIM1(uint16_t Pin, uint32_t TimeBase, uint32_t Freq, uint32_t DutyCycle
 		TIM_OC1Init(TIM1, &TIM_OCInitStructure);
 
 		TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable);
-	} else if (Pin == GPIO_Pin_13) {
+	} else if (Pin == GPIO_Pin_11) {
 		/* PWM1 Mode configuration: Channel1 : para TIM4 es PD12 */
 		TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 		TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
@@ -652,7 +648,7 @@ void SET_TIM1(uint16_t Pin, uint32_t TimeBase, uint32_t Freq, uint32_t DutyCycle
 		TIM_OC2Init(TIM1, &TIM_OCInitStructure);
 
 		TIM_OC2PreloadConfig(TIM1, TIM_OCPreload_Enable);
-	} else if (Pin == GPIO_Pin_14) {
+	} else if (Pin == GPIO_Pin_13) {
 		/* PWM1 Mode configuration: Channel1 : para TIM4 es PD12 */
 		TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 		TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
@@ -662,20 +658,8 @@ void SET_TIM1(uint16_t Pin, uint32_t TimeBase, uint32_t Freq, uint32_t DutyCycle
 		TIM_OC3Init(TIM1, &TIM_OCInitStructure);
 
 		TIM_OC3PreloadConfig(TIM1, TIM_OCPreload_Enable);
-	} else if (Pin == GPIO_Pin_15) {
-		/* PWM1 Mode configuration: Channel1 : para TIM4 es PD12 */
-		TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-		TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-		TIM_OCInitStructure.TIM_Pulse = DT_Value;
-		TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-
-		TIM_OC4Init(TIM1, &TIM_OCInitStructure);
-
-		TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable);
 	}
-
 	//Cargar valores al TIM4:
-	TIM_CtrlPWMOutputs(TIM1, ENABLE);
 	TIM_ARRPreloadConfig(TIM1, ENABLE);
     TIM_Cmd(TIM1, ENABLE);
 }
@@ -696,8 +680,6 @@ uint32_t FIND_CLOCK(GPIO_TypeDef* Port)
 	else if (Port == GPIOE) Clock = RCC_AHB1Periph_GPIOE;
 	else if (Port == GPIOF) Clock = RCC_AHB1Periph_GPIOF;
 	else if (Port == GPIOG) Clock = RCC_AHB1Periph_GPIOG;
-	else 					Clock = NULL;
-
 	return Clock;
 }
 
