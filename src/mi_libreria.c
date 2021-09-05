@@ -608,6 +608,7 @@ void SET_TIM1(uint16_t Pin, uint32_t TimeBase, uint32_t Freq, uint32_t DutyCycle
 
 	//Actualización de los valores del TIM4:
 	SystemCoreClockUpdate();
+	TIM_CtrlPWMOutputs(TIM1, DISABLE);
 	TIM_ARRPreloadConfig(TIM1, DISABLE);
 	TIM_Cmd(TIM1, DISABLE);
 
@@ -674,6 +675,7 @@ void SET_TIM1(uint16_t Pin, uint32_t TimeBase, uint32_t Freq, uint32_t DutyCycle
 	}
 
 	//Cargar valores al TIM4:
+	TIM_CtrlPWMOutputs(TIM1, ENABLE);
 	TIM_ARRPreloadConfig(TIM1, ENABLE);
     TIM_Cmd(TIM1, ENABLE);
 }
