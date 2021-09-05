@@ -33,6 +33,7 @@ DECLARACIONES:
 
 //Ticks del despachador de tareas:
 #define Ticks_RefreshTIM1	 10
+#define Ticks_RefreshLCD	 4
 
 //Definicion de Pins de PE9 como OSC1 del TIM1:
 #define TIM1_OC1_Port	GPIOE
@@ -46,6 +47,7 @@ DECLARACIONES:
 DECLARACION DE FUNCIONES LOCALES:
 ------------------------------------------------------------------------------*/
 void REFRESH_TIM1(void);
+void REFRESH_LCD(void);
 
 /*------------------------------------------------------------------------------
 DECLARACION VARIABLES GLOBALES:
@@ -65,6 +67,7 @@ uint32_t RefreshTIM1 = 0;
 
 //Variable para cambiar la frecuencia de operacion del TIM1:
 uint32_t Freq = 0;
+uint32_t RefreshLCD = 0;
 
 int main(void)
 {
@@ -79,6 +82,9 @@ CONFIGURACION DEL MICRO:
 	//Inicialización de PE9 como OSC1 del TIM1:
 	INIT_TIM1(TIM1_OC1_Port, TIM1_OC1);
 
+	//Inicializacion del DISPLAY LCD:
+	INIT_LCD_2x16(LCD_2X16);
+
 /*------------------------------------------------------------------------------
 BUCLE PRINCIPAL:
 ------------------------------------------------------------------------------*/
@@ -86,6 +92,8 @@ BUCLE PRINCIPAL:
     {
     	if(RefreshTIM1 == Ticks_RefreshTIM1)
     		REFRESH_TIM1();
+    	else if(RefreshLCD == Ticks_RefreshLCD)
+			REFRESH_LCD();
     }
 }
 
@@ -96,14 +104,46 @@ INTERRUPCIONES:
 void SysTick_Handler()
 {
 	RefreshTIM1++;
+	RefreshLCD++;
 }
 
 /*------------------------------------------------------------------------------
 TAREAS:
 ------------------------------------------------------------------------------*/
-void REFRESH_TIM1(void)
+//Manejo del TIM1:
+void REFRESH_TIM1()
 {
 	RefreshTIM1 = 0;
 	Freq = 100;
 	SET_TIM1(TIM1_OC1, TimeBase, Freq, DutyCycle);
+}
+
+//Manejo del LCD:
+void REFRESH_LCD()
+{
+	//Reinicio de los Ticks:
+	RefreshLCD = 0;
+
+	//Refresco del LCD:
+	CLEAR_LCD_2x16(LCD_2X16);
+
+	//Buffers para mostrar valores de variables:
+	char BufferFreq[BufferLength];
+	char BufferVolt[BufferLength];
+	char BufferDT[BufferLength];
+
+	//Calculo del voltaje en base al DT:
+	float Volt = DutyCycle * 3.3 / 100;
+
+	//Mostrar valor de frecuencia:
+	sprintf(BufferFreq, "FREQ = %d", Freq);
+	PRINT_LCD_2x16(LCD_2X16, 3, 0, BufferFreq);
+
+	//Mostrar valor del DT:
+	sprintf(BufferDT, "DT = %d", DutyCycle);
+	PRINT_LCD_2x16(LCD_2X16, 0, 1, BufferDT);
+
+	//Mostrar valor de voltaje:
+	sprintf(BufferVolt, "V = %.1f", Volt);
+	PRINT_LCD_2x16(LCD_2X16, 9, 1, BufferVolt);
 }
