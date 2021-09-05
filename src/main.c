@@ -113,8 +113,10 @@ TAREAS:
 //Manejo del TIM1:
 void REFRESH_TIM1()
 {
+	//Reinicio de los Ticks:
 	RefreshTIM1 = 0;
-	Freq = 350;
+
+	//Seteo del TIM1 a una FRECUENCIA determinada:
 	SET_TIM1(TIM1_OC1, TimeBase, Freq, DutyCycle);
 }
 
