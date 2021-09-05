@@ -545,6 +545,50 @@ void SET_TIM4(uint16_t Pin, uint32_t TimeBase, uint32_t Freq, uint32_t DutyCycle
     TIM_Cmd(TIM4, ENABLE);
 }
 
+
+
+/*****************************************************************************
+INIT_TIM1
+
+	* @author	A. Riedinger.
+	* @brief	Inicializa salidas como timers.
+	* @returns	void
+	* @param
+		- Port		Puerto del timer a inicializar. Ej: GPIOX.
+		- Pin		Pin del LED. Ej: GPIO_Pin_X
+
+	* @ej
+		- INIT_TIM4(GPIOX, GPIO_Pin_X); //Inicialización del Pin PXXX como TIMER4.
+******************************************************************************/
+void INIT_TIM1(GPIO_TypeDef* Port, uint16_t Pin)
+{
+	  GPIO_InitTypeDef GPIO_InitStructure;
+
+
+	  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM1, ENABLE);
+	  //Habilitacion de la senal de reloj para el periferico:
+	  uint32_t Clock;
+	  Clock = FIND_CLOCK(Port);
+	  RCC_AHB1PeriphClockCmd(Clock, ENABLE);
+
+	  /* GPIOC Configuration: TIM4 CH1 (PD12),CH2 (PD13),CH3 (PD14)CH4 (PD15) */
+	  GPIO_InitStructure.GPIO_Pin = Pin;
+	  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+	  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+	  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+	  GPIO_Init(Port, &GPIO_InitStructure);
+
+	  //Definición de GPIO_PinSourceXX:
+	  uint8_t PinSource;
+	  PinSource = FIND_PINSOURCE(Pin);
+
+	  /* Connect TIM4 pins to AF2 */
+	  GPIO_PinAFConfig(Port, PinSource, GPIO_AF_TIM1);
+}
+
+
+
 /*****************************************************************************
 SET_TIM1
 	* @author	A. Riedinger.
