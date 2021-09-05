@@ -40,9 +40,12 @@ DECLARACIONES:
 #define TIM1_OC1_Port	GPIOE
 #define TIM1_OC1		GPIO_Pin_9
 
-//Definición de Pins de PC1 como ADC:
+//Definicion de Pins de PC1 como ADC:
 #define ADC_PC1_Port	GPIOC
 #define ADC_PC1			GPIO_Pin_1
+
+//Definicion del maximo voltaje analogico:
+#define MAXVolt_AN	3.3
 
 //Base de tiempo y ciclo de trabajo del TIM1:
 #define TimeBase 	200000	//200kHz
@@ -72,6 +75,12 @@ LCD_2X16_t LCD_2X16[] = {
 uint32_t RefreshTIM1 = 0;
 uint32_t RefreshLCD = 0;
 uint32_t ReadADC_PC1 = 0;
+
+//Almacenamiento del voltaje:
+float Volt = 0;
+
+//Variables para retrasar la lectura de voltaje:
+uint32_t ContVolt = 0;
 
 //Variable para cambiar la frecuencia de operacion del TIM1:
 uint32_t Freq = 0;
@@ -148,9 +157,6 @@ void REFRESH_LCD()
 	char BufferVolt[BufferLength];
 	char BufferDT[BufferLength];
 
-	//Calculo del voltaje en base al DT:
-	float Volt = DutyCycle * 3.3 / 100;
-
 	//Mostrar valor de frecuencia:
 	sprintf(BufferFreq, "FREQ = %d", Freq);
 	PRINT_LCD_2x16(LCD_2X16, 3, 0, BufferFreq);
@@ -167,5 +173,14 @@ void REFRESH_LCD()
 void READ_ADC_PC1(void)
 {
 	//Reinicio de los Ticks:
-	ADC_PC_1 = 0;
+	ReadADC_PC1 = 0;
+
+	//Almacenamiento del valor de tension en cuentas digitales:
+	uint32_t VoltDig;
+
+	//Lectura del valor de voltaje digital:
+	VoltDig = READ_ADC(ADC_PC1_Port, ADC_PC1);
+
+	//Conversion de cuentas digitales a voltaje analogico:
+	Volt = (float) VoltDig * MAXVolt_AN / 4095;
 }
