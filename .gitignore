@@ -1,0 +1,15 @@
+
+Debug/src/mi_libreria.su
+Debug/src/mi_libreria.o
+Debug/src/main.su
+Debug/src/main.o
+Debug/04TP_E02.map
+Debug/04TP_E02.list
+Debug/04TP_E02.elf
+*.elf
+*.list
+*.map
+*.o
+*.su
+Debug/src/mi_libreria.o
+*.su
