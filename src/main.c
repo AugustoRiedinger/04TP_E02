@@ -114,7 +114,7 @@ TAREAS:
 void REFRESH_TIM1()
 {
 	RefreshTIM1 = 0;
-	Freq = 100;
+	Freq = 350;
 	SET_TIM1(TIM1_OC1, TimeBase, Freq, DutyCycle);
 }
 
