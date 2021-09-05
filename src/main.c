@@ -34,10 +34,15 @@ DECLARACIONES:
 //Ticks del despachador de tareas:
 #define Ticks_RefreshTIM1	 10
 #define Ticks_RefreshLCD	 4
+#define Ticks_ADC_PC1		 8
 
 //Definicion de Pins de PE9 como OSC1 del TIM1:
 #define TIM1_OC1_Port	GPIOE
 #define TIM1_OC1		GPIO_Pin_9
+
+//Definición de Pins de PC1 como ADC:
+#define ADC_PC1_Port	GPIOC
+#define ADC_PC1			GPIO_Pin_1
 
 //Base de tiempo y ciclo de trabajo del TIM1:
 #define TimeBase 	200000	//200kHz
@@ -48,6 +53,7 @@ DECLARACION DE FUNCIONES LOCALES:
 ------------------------------------------------------------------------------*/
 void REFRESH_TIM1(void);
 void REFRESH_LCD(void);
+void READ_ADC_PC1(void);
 
 /*------------------------------------------------------------------------------
 DECLARACION VARIABLES GLOBALES:
@@ -64,10 +70,12 @@ LCD_2X16_t LCD_2X16[] = {
 
 //Variables del despachador de tareas (TS):
 uint32_t RefreshTIM1 = 0;
+uint32_t RefreshLCD = 0;
+uint32_t ReadADC_PC1 = 0;
 
 //Variable para cambiar la frecuencia de operacion del TIM1:
 uint32_t Freq = 0;
-uint32_t RefreshLCD = 0;
+
 
 int main(void)
 {
@@ -85,6 +93,9 @@ CONFIGURACION DEL MICRO:
 	//Inicializacion del DISPLAY LCD:
 	INIT_LCD_2x16(LCD_2X16);
 
+	//Inicializacion de PC1 como ADC:
+	INIT_ADC(ADC_PC1_Port, ADC_PC1);
+
 /*------------------------------------------------------------------------------
 BUCLE PRINCIPAL:
 ------------------------------------------------------------------------------*/
@@ -94,6 +105,8 @@ BUCLE PRINCIPAL:
     		REFRESH_TIM1();
     	else if(RefreshLCD == Ticks_RefreshLCD)
 			REFRESH_LCD();
+    	else if(ReadADC_PC1 == Ticks_ADC_PC1)
+    		READ_ADC_PC1();
     }
 }
 
@@ -105,6 +118,7 @@ void SysTick_Handler()
 {
 	RefreshTIM1++;
 	RefreshLCD++;
+	ReadADC_PC1++;
 }
 
 /*------------------------------------------------------------------------------
@@ -148,4 +162,10 @@ void REFRESH_LCD()
 	//Mostrar valor de voltaje:
 	sprintf(BufferVolt, "V = %.1f", Volt);
 	PRINT_LCD_2x16(LCD_2X16, 9, 1, BufferVolt);
+}
+
+void READ_ADC_PC1(void)
+{
+	//Reinicio de los Ticks:
+	ADC_PC_1 = 0;
 }
