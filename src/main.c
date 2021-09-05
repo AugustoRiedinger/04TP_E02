@@ -32,7 +32,7 @@ DECLARACIONES:
 #define TimeINT_Systick 0.05
 
 //Ticks del despachador de tareas:
-#define Ticks_RefreshTIM1	 10
+#define Ticks_RefreshTIM1	 20
 #define Ticks_RefreshLCD	 4
 #define Ticks_ADC_PC1		 8
 
@@ -45,7 +45,10 @@ DECLARACIONES:
 #define ADC_PC1			GPIO_Pin_1
 
 //Definicion del maximo voltaje analogico:
-#define MAXVolt_AN	3.3
+#define MAXVolt_AN	3
+
+//Definicion de la maxima frecuencia a configurar:
+#define MAXFreq		300
 
 //Base de tiempo y ciclo de trabajo del TIM1:
 #define TimeBase 	200000	//200kHz
@@ -140,6 +143,7 @@ void REFRESH_TIM1()
 	RefreshTIM1 = 0;
 
 	//Seteo del TIM1 a una FRECUENCIA determinada:
+	Freq = Volt * MAXFreq / MAXVolt_AN;
 	SET_TIM1(TIM1_OC1, TimeBase, Freq, DutyCycle);
 }
 
