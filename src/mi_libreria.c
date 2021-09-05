@@ -631,7 +631,7 @@ void SET_TIM1(uint16_t Pin, uint32_t TimeBase, uint32_t Freq, uint32_t DutyCycle
 	//Configuración del Duty Cycle para cada pin:
 	DT_Value = DutyCycle * (TIM_Period + 1) / 100;
 
-	if (Pin == GPIO_Pin_12) {
+	if (Pin == GPIO_Pin_9) {
 		/* PWM1 Mode configuration: Channel1 : para TIM4 es PD12 */
 		TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 		TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
@@ -892,7 +892,19 @@ void P_LCD_2x16_Data(uint8_t wert, LCD_2X16_t* LCD_2X16)
 //Configuración del TIM4:
 uint8_t FIND_PINSOURCE(uint32_t Pin)
 {
-	if     (Pin == GPIO_Pin_12) return GPIO_PinSource12;
+	if     (Pin == GPIO_Pin_0)  return GPIO_PinSource0;
+	else if(Pin == GPIO_Pin_1)  return GPIO_PinSource1;
+	else if(Pin == GPIO_Pin_2)  return GPIO_PinSource2;
+	else if(Pin == GPIO_Pin_3)  return GPIO_PinSource3;
+	else if(Pin == GPIO_Pin_4)  return GPIO_PinSource4;
+	else if(Pin == GPIO_Pin_5)  return GPIO_PinSource5;
+	else if(Pin == GPIO_Pin_6)  return GPIO_PinSource6;
+	else if(Pin == GPIO_Pin_7)  return GPIO_PinSource7;
+	else if(Pin == GPIO_Pin_8)  return GPIO_PinSource8;
+	else if(Pin == GPIO_Pin_9)  return GPIO_PinSource9;
+	else if(Pin == GPIO_Pin_10) return GPIO_PinSource10;
+	else if(Pin == GPIO_Pin_11) return GPIO_PinSource11;
+	else if(Pin == GPIO_Pin_12) return GPIO_PinSource12;
 	else if(Pin == GPIO_Pin_13) return GPIO_PinSource13;
 	else if(Pin == GPIO_Pin_14) return GPIO_PinSource14;
 	else if(Pin == GPIO_Pin_15) return GPIO_PinSource15;
